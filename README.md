@@ -4,6 +4,16 @@ react-native-fabric-crashlytics
 
 Reports javascript exceptions in React Native to the Crashlytics server, using the react-native-fabric library.
 
+Dependencies
+-----
+
+You need to install react-native-fs and link it to your main project to run this:
+
+```
+npm install -S react-native-fs
+react-native link react-native-fs
+```
+
 Setup iOS
 -----
 
