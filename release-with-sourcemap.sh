@@ -1,14 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2015-present, Facebook, Inc.
-# All rights reserved.
-#
-# This source code is licensed under the BSD-style license found in the
-# LICENSE file in the root directory of this source tree. An additional grant
-# of patent rights can be found in the PATENTS file in the same directory.
-
-# Bundle React Native app's code and image assets.
-# This script is supposed to be invoked as part of Xcode build process
-# and relies on environment variables (including PWD) set by Xcode
+# Copied from react-native-xcode.sh and adapted for the correct paths and support for sourcemap
 
 if [[ "$SKIP_BUNDLING" ]]; then
   echo "SKIP_BUNDLING enabled; skipping."

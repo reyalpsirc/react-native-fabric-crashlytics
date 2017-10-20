@@ -49,9 +49,5 @@ To use, add this code to your index.ios.js and index.android.js (or some library
 ```
 // Already assumes that Fabric is initialized/configured properly in the iOS and Android app startup code.
 import crashlytics from 'react-native-fabric-crashlytics';
-function crashload () {
-  const path = `sourcemap.js`
-  crashlytics.init(path)
-}
-crashload()
+crashlytics.init('sourcemap.js')
 ```
