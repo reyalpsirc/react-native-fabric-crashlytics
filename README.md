@@ -27,7 +27,7 @@ else ../node_modules/react-native/scripts/react-native-xcode.sh
 fi
 ```
 
-Create an empty file named "sourcemap.js" on "PATH_TO_YOUR_PROJECT/ios" and drag and drop it to the project navigator on XCode, just below the "main.jsbundle" file.
+Create an empty file named **main.jsbundle.map** on "PATH_TO_YOUR_PROJECT/ios", drag and drop it to the project navigator  just below the "main.jsbundle" file on XCode and, on the popup that appears, uncheck all the targets.
 Once that's done, delete the empty file from the folder (but keep the reference on the project)
 
 Setup Android
@@ -37,7 +37,7 @@ Go to the file "PATH_TO_YOUR_PROJECT/android/app/build.gradle" and change `proje
 
 ```
 project.ext.react = [
-  extraPackagerArgs: [ "--sourcemap-output", "$buildDir/intermediates/assets/release/sourcemap.js" ]
+  extraPackagerArgs: [ "--sourcemap-output", "$buildDir/intermediates/assets/release/index.android.bundle.map" ]
 ]
 ```
 
@@ -48,6 +48,7 @@ To use, add this code to your index.ios.js and index.android.js (or some library
 
 ```
 // Already assumes that Fabric is initialized/configured properly in the iOS and Android app startup code.
+import { Platform } from 'react-native'
 import crashlytics from 'react-native-fabric-crashlytics';
-crashlytics.init('sourcemap.js')
+crashlytics.init(Platform.OS === 'ios' ? 'main.jsbundle.map' : 'index.android.bundle.map')
 ```

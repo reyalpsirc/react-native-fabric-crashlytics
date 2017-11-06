@@ -19,22 +19,25 @@ function init (sourcemapName = null) {
   async function errorHandler (e, isFatal) {
     let jsParsed = false
     // map the JS stacktrace using the sourcemap file given on init
-    try {
-      let trace = null
-      if (!sourcemapName || !(trace = await getStackTrace(e))) {
-        // record the exception with the info that we have
-        let x = await StackTrace.fromError(e, {offline: true})
-        trace = x.map((row) => (assign({}, row, {
-          fileName: `${row.fileName}:${row.lineNumber || 0}:${row.columnNumber || 0}`
-        })))
+    let trace = null
+    if (sourcemapName) {
+      try {
+        trace = await getStackTrace(e)
+      } catch (error) {
+        // ignore and use the normal stack on the error
       }
-      if (trace) {
-        e.stack = trace
-        Crashlytics.recordCustomExceptionName(e.message, e.message, e.stack)
-        jsParsed = true
-      }
-    } catch (error) {
-      // ignore and use the normal stack on the error
+    }
+    if (!trace) {
+      // record the exception with the info that we have
+      let x = await StackTrace.fromError(e, {offline: true})
+      trace = x.map((row) => (assign({}, row, {
+        fileName: `${row.fileName}:${row.lineNumber || 0}:${row.columnNumber || 0}`
+      })))
+    }
+    if (trace) {
+      e.stack = trace
+      Crashlytics.recordCustomExceptionName(e.message, e.message, e.stack)
+      jsParsed = true
     }
     // And then re-throw the exception with the original handler
     if (originalHandler) {
