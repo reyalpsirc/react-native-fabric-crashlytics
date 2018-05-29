@@ -11,8 +11,8 @@ function init (sourcemapName = null) {
     // Live reloading and hot reloading in particular lead to tons of noise...
     return
   }
-
   var originalHandler = global.ErrorUtils.getGlobalHandler()
+  if(!originalHandler) originalHandler = ErrorUtils.getGlobalHandler()
   if (sourcemapName) {
     initSourceMaps({sourceMapBundle: sourcemapName})
   }
@@ -29,15 +29,17 @@ function init (sourcemapName = null) {
     }
     if (!trace) {
       // record the exception with the info that we have
-      let x = await StackTrace.fromError(e, {offline: true})
-      trace = x.map((row) => (assign({}, row, {
-        fileName: `${row.fileName}:${row.lineNumber || 0}:${row.columnNumber || 0}`
-      })))
+      trace = await StackTrace.fromError(e, {offline: true})
     }
     if (trace) {
+      trace = trace.map((row) => (assign({}, row, {
+        fileName: `${row.fileName}:${row.lineNumber || 0}:${row.columnNumber || 0}`,
+        lineNumber: row.lineNumber || 0,
+        columnNumber: row.columnNumber || 0
+      })))
       e.stack = trace
-      Crashlytics.recordCustomExceptionName(e.message, e.message, e.stack)
       jsParsed = true
+      Crashlytics.recordCustomExceptionName(e.message, e.message, e.stack)
     }
     // And then re-throw the exception with the original handler
     if (originalHandler) {
